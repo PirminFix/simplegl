@@ -55,5 +55,6 @@ func main() {
 
 	gl.ClearColor(0.0, 0.0, 0.3, 0.0)
 
+	shader(window)
 	loop(window)
 }
