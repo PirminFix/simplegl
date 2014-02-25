@@ -35,10 +35,11 @@ func createFragment(program gl.Program) gl.Shader {
 	return shader
 }
 
-func shader(window *glfw.Window) (program gl.Program, vertexShader gl.Shader, fragmentShader gl.Shader) {
+func shader(window *glfw.Window) (program gl.Program) {
 	program = gl.CreateProgram()
-	vertexShader = createVertex(program)
-	fragmentShader = createFragment(program)
+	createVertex(program)
+	createFragment(program)
+	program.Link()
 
-	return program, vertexShader, fragmentShader
+	return program
 }
