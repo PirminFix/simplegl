@@ -15,14 +15,19 @@ func CreateWindow() *glfw.Window {
 }
 
 func loop(window *glfw.Window) {
-	// create vertexbuffer
-	gVertexBufferData := []float32{
+	vertices := []float32{
 		-1.0, -1.0, 0.0, // Vertex 1
 		1.0, -1.0, 0.0, // Vertex 2
-		0.0, 1.0, 0.0} // Vertex 3
+		0.0, 1.0, 0.0, // Vertex 3
+	}
+	// Create VertexBuffer on graphics card
 	vertexBuffer := gl.GenBuffer()
+
+	// make the buffer the active buffer
 	vertexBuffer.Bind(gl.ARRAY_BUFFER)
-	gl.BufferData(gl.ARRAY_BUFFER, len(gVertexBufferData)*4, gVertexBufferData, gl.STATIC_DRAW)
+
+	// upload data to graphic memory
+	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*4, vertices, gl.STATIC_DRAW)
 	for {
 		// clear screen
 		gl.Clear(gl.COLOR_BUFFER_BIT)
