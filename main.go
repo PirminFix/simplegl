@@ -14,45 +14,32 @@ func CreateWindow() *glfw.Window {
 	return window
 }
 
-func loop(window *glfw.Window) {
-	vertices := []float32{
-		-1.0, -1.0, 0.0, // Vertex 1
-		1.0, -1.0, 0.0, // Vertex 2
-		0.0, 1.0, 0.0, // Vertex 3
-	}
-	// Create VertexBuffer on graphics card
-	vertexBuffer := gl.GenBuffer()
+func loop(window *glfw.Window, vertexBuffer gl.Buffer) {
 
-	// make the buffer the active buffer
+	log.Print("bind Vertex buffer")
 	vertexBuffer.Bind(gl.ARRAY_BUFFER)
 
-	// upload data to graphic memory
-	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*4, vertices, gl.STATIC_DRAW)
-	for {
+	log.Print("really loop now")
+	for !window.ShouldClose() {
 		// clear screen
 		gl.Clear(gl.COLOR_BUFFER_BIT)
 
-		// first attribute buffer: vertices
-		var vertexAttrib gl.AttribLocation = 0
-		vertexAttrib.EnableArray()
-		vertexBuffer.Bind(gl.ARRAY_BUFFER)
-		vertexAttrib.AttribPointer(
-			3, // size
-			gl.FLOAT,
-			false, // normalized?
-			0,     // stride
-			nil)   // array buffer offset
-
+		log.Print("Draw")
 		// draw the triangle
-		gl.DrawArrays(gl.TRIANGLES, 0, 3)
+		// FIXME here it crashes
+		gl.DrawArrays(
+			gl.TRIANGLES, // We want a triangle
+			0,            // skip that many vertices from the beginning
+			3,            // how many vertices to process
+		)
 
-		vertexAttrib.DisableArray()
-
+		log.Print("Swap buffers")
 		window.SwapBuffers()
 	}
 }
 
-func main() {
+// Init OpenGL and a window
+func initGl() *glfw.Window {
 	glfw.Init()
 	window := CreateWindow()
 	window.MakeContextCurrent()
@@ -60,10 +47,51 @@ func main() {
 	if gl.Init() != 0 {
 		log.Fatal("Failed to init GL")
 	}
+	return window
+}
 
+// Fill the vertex buffer wiuth data
+func fillVBO(vertices []float32) (vertexBuffer gl.Buffer) {
+	// Create VertexBuffer on graphics card
+	log.Print("generating buffer")
+	vertexBuffer = gl.GenBuffer()
+
+	// make the buffer the active buffer
+	log.Print("binding buffer")
+	vertexBuffer.Bind(gl.ARRAY_BUFFER)
+
+	// upload data to graphic memory
+	log.Print("uploading data")
+	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*4, vertices, gl.STATIC_DRAW)
+
+	log.Print("returning")
+	return vertexBuffer
+}
+
+func main() {
+	log.Print("initilaizing window")
+	window := initGl()
+
+	log.Print("Building shader")
+	program := shader(window)
+
+	program.Use()
+
+	log.Print("Clear color")
 	gl.ClearColor(0.0, 0.0, 0.3, 0.0)
 
-	program := shader(window)
-	program.Use()
-	loop(window)
+	vao := gl.GenVertexArray()
+	vao.Bind()
+
+	vertices := []float32{
+		-1.0, -1.0, 0.0, // Vertex 1
+		1.0, -1.0, 0.0, // Vertex 2
+		0.0, 1.0, 0.0, // Vertex 3
+	}
+
+	log.Print("fill vertex buffer")
+	vertexBuffer := fillVBO(vertices)
+
+	log.Print("loop")
+	loop(window, vertexBuffer)
 }

@@ -14,7 +14,6 @@ func fillShader(program gl.Program, shader gl.Shader, filename string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Printf("%v\n", err)
 	vertexSource := bytes.NewBuffer(vertexData).String()
 	shader.Source(vertexSource)
 	shader.Compile()
@@ -39,7 +38,25 @@ func shader(window *glfw.Window) (program gl.Program) {
 	program = gl.CreateProgram()
 	createVertex(program)
 	createFragment(program)
+
+	// Say to which buffer shall fragment data go
+	program.BindFragDataLocation(0, "finalColor")
+
 	program.Link()
+
+	// Get `vert` input attribute of vertex shader
+	attributeLocation := program.GetAttribLocation("vert")
+
+	attributeLocation.AttribPointer(
+		3,        // amount of values per vertex
+		gl.FLOAT, // type
+		false,    // if not float, normalize?
+		0,        // stride (how much data lays in between the vertices in the array)
+		nil,      // array buffer offset
+	)
+
+	// needs to be enabled
+	attributeLocation.EnableArray()
 
 	return program
 }
