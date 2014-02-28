@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"math"
+	"unsafe"
 
 	"github.com/go-gl/gl"
 	"github.com/go-gl/glfw3"
@@ -52,7 +53,7 @@ func main() {
 	// Then upload the vertices to that buffer
 	vbo := gl.GenBuffer()
 	vbo.Bind(gl.ARRAY_BUFFER)
-	gl.BufferData(gl.ARRAY_BUFFER, sizeof(vertices), vertices, gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, int(unsafe.Sizeof(vertices)) * len(vertices), vertices, gl.STATIC_DRAW)
 
 	program := shaderProgram(window)
 	program.Link()
@@ -69,7 +70,7 @@ func main() {
 		2,        // Amount of values for a vertex (X, Y)
 		gl.FLOAT, // Type of the values
 		false,    // normalize? (only if not floats)
-		5*sizeof([]float32{0}), // bytes between values (stride)
+		5*int(unsafe.Sizeof(float32(0))), // bytes between values (stride)
 		nil, // offset in the array (whyever this needs to be a pointer)
 	)
 	posAttrib.EnableArray()
@@ -79,7 +80,7 @@ func main() {
 		3,
 		gl.FLOAT,
 		false,
-		5*sizeof([]float32{0}),
+		5*int(unsafe.Sizeof(float32(0))),
 		uintptr(2 * 4),
 	)
 	colAttrib.EnableArray()
