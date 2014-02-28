@@ -1,8 +1,7 @@
 #version 130
 
-out vec4 finalColor;
+out vec4 outColor;
 
 void main() {
-    //set every drawn pixel to white
-    finalColor = vec4(1.0, 1.0, 1.0, 1.0);
+    outColor = vec4(1.0, 1.0, 1.0, 1.0);
 }

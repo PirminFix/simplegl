@@ -1,7 +1,7 @@
 #version 130
 
-in vec3 vert;
+in vec2 vert;
 
 void main() {
-        gl_Position = vec4(vert, 1);
+        gl_Position = vec4(vert, 0.0, 1.0);
 }
