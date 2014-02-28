@@ -45,5 +45,8 @@ func shaderProgram(window *glfw.Window) (program gl.Program) {
 	program = gl.CreateProgram()
 	createVertex(program)
 	createFragment(program)
+	// Write to buffer 0 (There's a method for getting this from somewhere
+	// but I don't know right now and I stick to the open.gl tutorial)
+	program.BindFragDataLocation(0, "outColor")
 	return program
 }

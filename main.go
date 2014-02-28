@@ -51,8 +51,14 @@ func main() {
 	// Then upload the vertices to that buffer
 	vbo := gl.GenBuffer()
 	vbo.Bind(gl.ARRAY_BUFFER)
-	// each float32 consumes 4 bytes
 	gl.BufferData(gl.ARRAY_BUFFER, sizeof(vertices), vertices, gl.STATIC_DRAW)
+
+	program := shaderProgram(window)
+	program.Link()
+	program.Use()
+
+	// Telling opengl how our attributes are connected:
+	posAttrib := program.GetAttribLocation("position")
 
 	for !window.ShouldClose() {
 		// Might be used as a timer or something
