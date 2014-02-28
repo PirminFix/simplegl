@@ -2,10 +2,11 @@ package main
 
 import (
 	"bytes"
-	"github.com/go-gl/gl"
-	glfw "github.com/go-gl/glfw3"
 	"io/ioutil"
 	"log"
+
+	"github.com/go-gl/gl"
+	glfw "github.com/go-gl/glfw3"
 )
 
 // Fill the shader with the source, compile and go!
@@ -17,6 +18,10 @@ func fillShader(program gl.Program, shader gl.Shader, filename string) {
 	shaderSource := bytes.NewBuffer(shaderData).String()
 	shader.Source(shaderSource)
 	shader.Compile()
+	if shader.Get(gl.COMPILE_STATUS) != gl.TRUE {
+		shaderLog := shader.GetInfoLog()
+		log.Fatalf("Compiling shader %v failed!\n%v\n", filename, shaderLog)
+	}
 	program.AttachShader(shader)
 }
 
