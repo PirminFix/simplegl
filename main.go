@@ -57,14 +57,28 @@ func main() {
 	program.Link()
 	program.Use()
 
+	// Let's create a Vertex Array Object to save the relation of attributes and buffer object
+	vao := gl.GenVertexArray()
+	vao.Bind()
+
 	// Telling opengl how our attributes are connected:
 	posAttrib := program.GetAttribLocation("position")
+	// describes current VBO
+	posAttrib.AttribPointer(
+		2,        // Amount of values for a vertex (X, Y)
+		gl.FLOAT, // Type of the values
+		false,    // normalize? (only if not floats)
+		0,        // bytes between values (stride)
+		nil,        // offset in the array (whyever this needs to be a pointer)
+	)
+	posAttrib.EnableArray()
 
 	for !window.ShouldClose() {
 		// Might be used as a timer or something
 		// leaving this here as a reminder of its existence
 		//time := glfw3.GetTime()
 		glfw3.PollEvents()
+		gl.DrawArrays(gl.TRIANGLES, 0, 3)
 		window.SwapBuffers()
 	}
 }
