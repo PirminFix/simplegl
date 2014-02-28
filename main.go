@@ -73,6 +73,9 @@ func main() {
 	)
 	posAttrib.EnableArray()
 
+	uniColor := program.GetUniformLocation("triangleColor")
+	uniColor.Uniform3f(1.0, 0.0, 0.0)
+
 	for !window.ShouldClose() {
 		// Might be used as a timer or something
 		// leaving this here as a reminder of its existence
