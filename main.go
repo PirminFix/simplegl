@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
+	"github.com/go-gl/gl"
 	"github.com/go-gl/glfw3"
-	//"github.com/niemeyer/qml/gl"
 )
 
 const NAME = "simplegl"
@@ -37,6 +37,22 @@ func main() {
 	defer window.Destroy()
 	window.MakeContextCurrent()
 	window.SetKeyCallback(glfwKeyCallback)
+
+	gl.Init()
+
+	// Triangle
+	vertices := []float32{
+		0.0, 0.5, // Vertex 1 (X, Y)
+		0.5, -0.5, // Vertex 2 (X, Y)
+		-0.5, -0.5, // Vertex 3 (X, Y)
+	}
+
+	// Create Vertex Buffer Object to have some space in video ram for our vertices
+	// Then upload the vertices to that buffer
+	vbo := gl.GenBuffer()
+	vbo.Bind(gl.ARRAY_BUFFER)
+	// each float32 consumes 4 bytes
+	gl.BufferData(gl.ARRAY_BUFFER, sizeof(vertices), vertices, gl.STATIC_DRAW)
 
 	for !window.ShouldClose() {
 		// Might be used as a timer or something
