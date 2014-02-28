@@ -41,33 +41,41 @@ func main() {
 
 	gl.Init()
 
+	// Let's create a Vertex Array Object to save the relation of attributes and buffer object
+	vao := gl.GenVertexArray()
+	vao.Bind()
+
+	// Create Vertex Buffer Object to have some space in video ram for our vertices
+	vbo := gl.GenBuffer()
+
 	// Triangle
 	vertices := []float32{
 		-0.5, 0.5, 1.0, 0.0, 0.0, // Top-left
 		0.5, 0.5, 0.0, 1.0, 0.0, // Top-right
 		0.5, -0.5, 0.0, 0.0, 1.0, // Bottom-right
-
-		0.5, -0.5, 0.0, 0.0, 1.0, // Bottom-right
 		-0.5, -0.5, 1.0, 1.0, 1.0, // Bottom-left
-		-0.5, 0.5, 1.0, 0.0, 0.0, // Top-left
 	}
 
-	// Create Vertex Buffer Object to have some space in video ram for our vertices
-	// Then upload the vertices to that buffer
-	vbo := gl.GenBuffer()
 	vbo.Bind(gl.ARRAY_BUFFER)
 	gl.BufferData(gl.ARRAY_BUFFER, int(unsafe.Sizeof(vertices))*len(vertices), vertices, gl.STATIC_DRAW)
+
+	ebo := gl.GenBuffer()
+
+	elements := []gl.GLuint{
+		0, 1, 2,
+		2, 3, 0,
+	}
+
+	ebo.Bind(gl.ELEMENT_ARRAY_BUFFER)
+	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, int(unsafe.Sizeof(elements))*len(elements), elements, gl.STATIC_DRAW)
 
 	program := shaderProgram(window)
 	program.Link()
 	program.Use()
 
-	// Let's create a Vertex Array Object to save the relation of attributes and buffer object
-	vao := gl.GenVertexArray()
-	vao.Bind()
-
 	// Telling opengl how our attributes are connected:
 	posAttrib := program.GetAttribLocation("position")
+	posAttrib.EnableArray()
 	// describes current VBO
 	posAttrib.AttribPointer(
 		2,        // Amount of values for a vertex (X, Y)
@@ -76,9 +84,9 @@ func main() {
 		5*int(unsafe.Sizeof(float32(0))), // bytes between values (stride)
 		nil, // offset in the array (whyever this needs to be a pointer)
 	)
-	posAttrib.EnableArray()
 
 	colAttrib := program.GetAttribLocation("color")
+	colAttrib.EnableArray()
 	colAttrib.AttribPointer(
 		3,
 		gl.FLOAT,
@@ -86,14 +94,14 @@ func main() {
 		5*int(unsafe.Sizeof(float32(0))),
 		2*unsafe.Sizeof(float32(0)),
 	)
-	colAttrib.EnableArray()
 
 	for !window.ShouldClose() {
 		// Might be used as a timer or something
 		// leaving this here as a reminder of its existence
 		glfw3.PollEvents()
 		//time := glfw3.GetTime()
-		gl.DrawArrays(gl.TRIANGLES, 0, 6)
+		//gl.DrawArrays(gl.TRIANGLES, 0, 6)
+		gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, nil)
 		window.SwapBuffers()
 	}
 }
