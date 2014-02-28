@@ -53,7 +53,7 @@ func main() {
 	// Then upload the vertices to that buffer
 	vbo := gl.GenBuffer()
 	vbo.Bind(gl.ARRAY_BUFFER)
-	gl.BufferData(gl.ARRAY_BUFFER, int(unsafe.Sizeof(vertices)) * len(vertices), vertices, gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, int(unsafe.Sizeof(vertices))*len(vertices), vertices, gl.STATIC_DRAW)
 
 	program := shaderProgram(window)
 	program.Link()
