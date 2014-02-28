@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"math"
 
 	"github.com/go-gl/gl"
 	"github.com/go-gl/glfw3"
@@ -69,18 +70,18 @@ func main() {
 		gl.FLOAT, // Type of the values
 		false,    // normalize? (only if not floats)
 		0,        // bytes between values (stride)
-		nil,        // offset in the array (whyever this needs to be a pointer)
+		nil,      // offset in the array (whyever this needs to be a pointer)
 	)
 	posAttrib.EnableArray()
 
 	uniColor := program.GetUniformLocation("triangleColor")
-	uniColor.Uniform3f(1.0, 0.0, 0.0)
 
 	for !window.ShouldClose() {
 		// Might be used as a timer or something
 		// leaving this here as a reminder of its existence
-		//time := glfw3.GetTime()
 		glfw3.PollEvents()
+		time := glfw3.GetTime()
+		uniColor.Uniform3f(float32((math.Sin(time*4.0)+1.0) / 2.0), 0.0, 0.0)
 		gl.DrawArrays(gl.TRIANGLES, 0, 3)
 		window.SwapBuffers()
 	}
