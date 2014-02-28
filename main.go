@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"math"
 	"unsafe"
 
 	"github.com/go-gl/gl"
@@ -44,9 +43,13 @@ func main() {
 
 	// Triangle
 	vertices := []float32{
-		0.0, 0.5, 1.0, 0.0, 0.0, // Vertex 1 (X, Y) Red
-		0.5, -0.5, 0.0, 1.0, 0.0, // Vertex 2 (X, Y) Green
-		-0.5, -0.5, 0.0, 0.0, 1.0, // Vertex 3 (X, Y) Blue
+		-0.5, 0.5, 1.0, 0.0, 0.0, // Top-left
+		0.5, 0.5, 0.0, 1.0, 0.0, // Top-right
+		0.5, -0.5, 0.0, 0.0, 1.0, // Bottom-right
+
+		0.5, -0.5, 0.0, 0.0, 1.0, // Bottom-right
+		-0.5, -0.5, 1.0, 1.0, 1.0, // Bottom-left
+		-0.5, 0.5, 1.0, 0.0, 0.0, // Top-left
 	}
 
 	// Create Vertex Buffer Object to have some space in video ram for our vertices
@@ -85,15 +88,12 @@ func main() {
 	)
 	colAttrib.EnableArray()
 
-	uniColor := program.GetUniformLocation("triangleColor")
-
 	for !window.ShouldClose() {
 		// Might be used as a timer or something
 		// leaving this here as a reminder of its existence
 		glfw3.PollEvents()
-		time := glfw3.GetTime()
-		uniColor.Uniform3f(float32((math.Sin(time*4.0)+1.0)/2.0), 0.0, 0.0)
-		gl.DrawArrays(gl.TRIANGLES, 0, 3)
+		//time := glfw3.GetTime()
+		gl.DrawArrays(gl.TRIANGLES, 0, 6)
 		window.SwapBuffers()
 	}
 }
