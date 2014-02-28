@@ -43,9 +43,9 @@ func main() {
 
 	// Triangle
 	vertices := []float32{
-		0.0, 0.5, // Vertex 1 (X, Y)
-		0.5, -0.5, // Vertex 2 (X, Y)
-		-0.5, -0.5, // Vertex 3 (X, Y)
+		0.0, 0.5, 1.0, 0.0, 0.0, // Vertex 1 (X, Y) Red
+		0.5, -0.5, 0.0, 1.0, 0.0, // Vertex 2 (X, Y) Green
+		-0.5, -0.5, 0.0, 0.0, 1.0, // Vertex 3 (X, Y) Blue
 	}
 
 	// Create Vertex Buffer Object to have some space in video ram for our vertices
@@ -69,10 +69,20 @@ func main() {
 		2,        // Amount of values for a vertex (X, Y)
 		gl.FLOAT, // Type of the values
 		false,    // normalize? (only if not floats)
-		0,        // bytes between values (stride)
-		nil,      // offset in the array (whyever this needs to be a pointer)
+		5*sizeof([]float32{0}), // bytes between values (stride)
+		nil, // offset in the array (whyever this needs to be a pointer)
 	)
 	posAttrib.EnableArray()
+
+	colAttrib := program.GetAttribLocation("color")
+	colAttrib.AttribPointer(
+		3,
+		gl.FLOAT,
+		false,
+		5*sizeof([]float32{0}),
+		uintptr(2 * 4),
+	)
+	colAttrib.EnableArray()
 
 	uniColor := program.GetUniformLocation("triangleColor")
 
@@ -81,7 +91,7 @@ func main() {
 		// leaving this here as a reminder of its existence
 		glfw3.PollEvents()
 		time := glfw3.GetTime()
-		uniColor.Uniform3f(float32((math.Sin(time*4.0)+1.0) / 2.0), 0.0, 0.0)
+		uniColor.Uniform3f(float32((math.Sin(time*4.0)+1.0)/2.0), 0.0, 0.0)
 		gl.DrawArrays(gl.TRIANGLES, 0, 3)
 		window.SwapBuffers()
 	}
