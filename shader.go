@@ -10,12 +10,12 @@ import (
 
 // Fill the shader with the source, compile and go!
 func fillShader(program gl.Program, shader gl.Shader, filename string) {
-	vertexData, err := ioutil.ReadFile(filename)
+	shaderData, err := ioutil.ReadFile(filename)
 	if err != nil {
 		log.Fatal(err)
 	}
-	vertexSource := bytes.NewBuffer(vertexData).String()
-	shader.Source(vertexSource)
+	shaderSource := bytes.NewBuffer(shaderData).String()
+	shader.Source(shaderSource)
 	shader.Compile()
 	program.AttachShader(shader)
 }
