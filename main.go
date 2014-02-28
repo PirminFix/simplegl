@@ -81,7 +81,7 @@ func main() {
 		gl.FLOAT,
 		false,
 		5*int(unsafe.Sizeof(float32(0))),
-		uintptr(2 * 4),
+		2*unsafe.Sizeof(float32(0)),
 	)
 	colAttrib.EnableArray()
 
