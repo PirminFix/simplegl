@@ -8,21 +8,21 @@ import (
 )
 import _ "image/png"
 
-func img2array(img image.Image) []uint32 {
+func img2array(img image.Image) (imgSlice []uint32, spanX, spanY int) {
 	rect := img.Bounds()
-	spanX := rect.Max.X - rect.Min.X
-	spanY := rect.Max.Y - rect.Min.Y
-	imgSlice := make([]uint32, spanX*spanY)
+	spanX = rect.Max.X - rect.Min.X
+	spanY = rect.Max.Y - rect.Min.Y
+	imgSlice = make([]uint32, spanX*spanY)
 	for x := rect.Min.X; x < rect.Max.X; x++ {
 		for y := rect.Min.Y; y < rect.Max.Y; y++ {
 			r, g, b, a := img.At(x, y).RGBA()
 			imgSlice = append(imgSlice, r, g, b, a)
 		}
 	}
-	return imgSlice
+	return
 }
 
-func png2array(filename string) []uint32 {
+func png2array(filename string) ([]uint32, int, int) {
 	imgFile, err := os.Open(filename)
 	if err != nil {
 		log.Fatalf("Loading image file failed: %v\n", err)
