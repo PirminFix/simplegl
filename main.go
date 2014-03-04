@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"unsafe"
 
@@ -108,66 +107,6 @@ func genTex() {
 	//glError("mip")
 }
 
-func setAttrib(name string, program gl.Program, values uint, stride int, offset uintptr) {
-	attrib := program.GetAttribLocation(name)
-	if attrib < 0 {
-		log.Fatalf(fmt.Sprint("%v < 0", name))
-	}
-	attrib.EnableArray()
-	attrib.AttribPointer(
-		values,   // Amount of values for a vertex (X, Y)
-		gl.FLOAT, // Type of the values
-		false,    // normalize? (only if not floats)
-		stride*int(unsafe.Sizeof(float32(0))), // bytes between values (stride)
-		offset*unsafe.Sizeof(float32(0)),      // offset in the array (whyever this needs to be a pointer)
-	)
-}
-
-func setPosAttrib(program gl.Program) {
-	// Telling opengl how our attributes are connected:
-	posAttrib := program.GetAttribLocation("position")
-	posAttrib.EnableArray()
-	// describes current VBO
-	posAttrib.AttribPointer(
-		2,        // Amount of values for a vertex (X, Y)
-		gl.FLOAT, // Type of the values
-		false,    // normalize? (only if not floats)
-		7*int(unsafe.Sizeof(float32(0))), // bytes between values (stride)
-		nil, // offset in the array (whyever this needs to be a pointer)
-	)
-	glError("posAttrib")
-}
-func setColAttrib(program gl.Program) {
-	colAttrib := program.GetAttribLocation("color")
-	colAttrib.EnableArray()
-	colAttrib.AttribPointer(
-		3,
-		gl.FLOAT,
-		false,
-		7*int(unsafe.Sizeof(float32(0))),
-		2*unsafe.Sizeof(float32(0)),
-	)
-	glError("colAttrib")
-}
-
-func setTexAttrib(program gl.Program) {
-	texAttrib := program.GetAttribLocation("texcoord")
-	if texAttrib == -1 {
-		log.Fatal(`GetAttribLocation("texcoord") returned -1`)
-	}
-	glError(fmt.Sprintf("texAttribA %v", texAttrib))
-	texAttrib.EnableArray()
-	glError(fmt.Sprintf("texAttribB %v", texAttrib))
-	texAttrib.AttribPointer(
-		2,
-		gl.FLOAT,
-		false,
-		7*int(unsafe.Sizeof(float32(0))),
-		5*unsafe.Sizeof(float32(0)),
-	)
-	glError("texAttribC")
-}
-
 func main() {
 
 	window := glfwStuff()
@@ -184,13 +123,11 @@ func main() {
 	program.Use()
 	glError("program")
 
-	setPosAttrib(program)
-	//bla := program.GetAttribLocation("bla")
-	//if bla == -1 {
-	//	log.Fatal("no bla :(")
-	//}
-	setColAttrib(program)
-	//setTexAttrib(program)
+	am := NewAttributeManager(program)
+	am.Add("position", 2)
+	am.Add("color", 3)
+	am.Add("tex", 2)
+	am.Set()
 
 	genTex()
 
