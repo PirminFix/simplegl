@@ -77,20 +77,22 @@ func genTex() {
 	tex.Bind(gl.TEXTURE_2D)
 	glError("texgen")
 	//pixels, imgWidth, imgHeight := png2array(TEXTUREFILE)
-	pixels := []float32{
-		1.0, 1.0, 1.0, 0.0, 0.0, 0.0,
-		0.0, 0.0, 0.0, 1.0, 1.0, 1.0,
-	}
-	imgWidth := 2
-	imgHeight := 2
+	//pixels := []float32{
+	//	1.0, 1.0, 1.0, 0.0, 0.0, 0.0,
+	//	0.0, 0.0, 0.0, 1.0, 1.0, 1.0,
+	//}
+	//imgWidth := 2
+	//imgHeight := 2
+	pixels, imgWidth, imgHeight := png2array(TEXTUREFILE)
+	log.Printf("pixels: %v", pixels)
 	gl.TexImage2D(
 		gl.TEXTURE_2D, // work on 2d texture
 		0,             // Level of detail
-		gl.RGB,        // Format for the gpu
+		gl.RGBA,        // Format for the gpu
 		imgWidth,      // width
 		imgHeight,     // height
 		0,             // border, always 0
-		gl.RGB,        // format of the image
+		gl.RGBA,        // format of the image
 		//gl.UNSIGNED_INT, // datatype of the image
 		gl.FLOAT,
 		pixels, // image array
