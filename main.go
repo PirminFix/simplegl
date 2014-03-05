@@ -126,7 +126,7 @@ func main() {
 	am := NewAttributeManager(program)
 	am.Add("position", 2)
 	am.Add("color", 3)
-	am.Add("tex", 2)
+	am.Add("texcolor", 2)
 	am.Set()
 
 	genTex()
