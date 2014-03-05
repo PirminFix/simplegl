@@ -34,10 +34,10 @@ func genVbo() gl.Buffer {
 	// Triangle
 	vertices := []float32{
 		// Position, Color, Texcoords
-		-0.5, 0.5, 1.0, 0.0, 0.0, 0.0, 0.0, // Top-left
-		0.5, 0.5, 0.0, 1.0, 0.0, 1.0, 0.0, // Top-right
-		0.5, -0.5, 0.0, 0.0, 1.0, 1.0, 1.0, // Bottom-right
-		-0.5, -0.5, 1.0, 1.0, 1.0, 0.0, 1.0, // Bottom-left
+		-0.5, 0.5, 0.0, 0.0, // Top-left
+		0.5, 0.5, 1.0, 0.0, // Top-right
+		0.5, -0.5, 1.0, 1.0, // Bottom-right
+		-0.5, -0.5, 0.0, 1.0, // Bottom-left
 	}
 	gl.BufferData(
 		gl.ARRAY_BUFFER,
@@ -77,9 +77,9 @@ func genTex() {
 	tex.Bind(gl.TEXTURE_2D)
 	glError("texgen")
 	//pixels, imgWidth, imgHeight := png2array(TEXTUREFILE)
-	pixels := []uint32{
-		1.0, 1.0, 1.0, 0.0, 0.0, 0.0,
-		0.0, 0.0, 0.0, 1.0, 1.0, 1.0,
+	pixels := []float32{
+		0.0, 0.0, 1.0, 0.0, 1.0, 0.0,
+		0.0, 1.0, 1.0, 1.0, 0.0, 0.0,
 	}
 	imgWidth := 2
 	imgHeight := 2
@@ -101,9 +101,9 @@ func genTex() {
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.MIRRORED_REPEAT)
 	glError("wrap")
 	//gl.GenerateMipmap(gl.TEXTURE_2D)
-	//gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST_MIPMAP_NEAREST)
-	//gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST_MIPMAP_NEAREST)
-	//glError("mip")
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+	glError("mip")
 }
 
 func main() {
@@ -124,7 +124,7 @@ func main() {
 
 	am := NewAttributeManager(program)
 	am.Add("position", 2)
-	am.Add("color", 3)
+	//am.Add("color", 3)
 	am.Add("texcoord", 2)
 	am.Set()
 
