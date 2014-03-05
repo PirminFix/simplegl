@@ -95,7 +95,6 @@ func genTex() {
 		gl.FLOAT,
 		pixels, // image array
 	)
-	defer tex.Delete()
 	glError("tex")
 	// make this mirrored wrap!
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.MIRRORED_REPEAT)
@@ -126,7 +125,7 @@ func main() {
 	am := NewAttributeManager(program)
 	am.Add("position", 2)
 	am.Add("color", 3)
-	am.Add("texcolor", 2)
+	am.Add("texcoord", 2)
 	am.Set()
 
 	genTex()
