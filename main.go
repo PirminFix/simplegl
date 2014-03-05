@@ -77,7 +77,7 @@ func genTex() {
 	tex.Bind(gl.TEXTURE_2D)
 	glError("texgen")
 	//pixels, imgWidth, imgHeight := png2array(TEXTUREFILE)
-	pixels := []uint32{
+	pixels := []float32{
 		1.0, 1.0, 1.0, 0.0, 0.0, 0.0,
 		0.0, 0.0, 0.0, 1.0, 1.0, 1.0,
 	}
@@ -101,9 +101,9 @@ func genTex() {
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.MIRRORED_REPEAT)
 	glError("wrap")
 	//gl.GenerateMipmap(gl.TEXTURE_2D)
-	//gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST_MIPMAP_NEAREST)
-	//gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST_MIPMAP_NEAREST)
-	//glError("mip")
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+	glError("mip")
 }
 
 func main() {
