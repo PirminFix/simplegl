@@ -34,10 +34,10 @@ func genVbo() gl.Buffer {
 	// Triangle
 	vertices := []float32{
 		// Position, Color, Texcoords
-		-0.5, 0.5, 0.0, 0.0, // Top-left
-		0.5, 0.5, 1.0, 0.0, // Top-right
-		0.5, -0.5, 1.0, 1.0, // Bottom-right
-		-0.5, -0.5, 0.0, 1.0, // Bottom-left
+		-0.5, 0.5, 1.0, 0.0, 0.0, 0.0, 0.0, // Top-left
+		0.5, 0.5, 0.0, 1.0, 0.0, 1.0, 0.0, // Top-right
+		0.5, -0.5, 0.0, 0.0, 1.0, 1.0, 1.0, // Bottom-right
+		-0.5, -0.5, 1.0, 1.0, 1.0, 0.0, 1.0, // Bottom-left
 	}
 	gl.BufferData(
 		gl.ARRAY_BUFFER,
@@ -118,7 +118,7 @@ func main() {
 
 	am := NewAttributeManager(program)
 	am.Add("position", 2)
-	//am.Add("color", 3)
+	am.Add("color", 3)
 	am.Add("texcoord", 2)
 	am.Set()
 
