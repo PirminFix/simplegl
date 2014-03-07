@@ -34,10 +34,10 @@ func genVbo() gl.Buffer {
 	// Triangle
 	vertices := []float32{
 		// Position, Color, Texcoords
-		-0.5, 0.5, 1.0, 0.0, 0.0, 0.0, 0.0, // Top-left
-		0.5, 0.5, 0.0, 1.0, 0.0, 1.0, 0.0, // Top-right
-		0.5, -0.5, 0.0, 0.0, 1.0, 1.0, 1.0, // Bottom-right
-		-0.5, -0.5, 1.0, 1.0, 1.0, 0.0, 1.0, // Bottom-left
+		-0.5, 0.5, 0.0, 0.0, // Top-left
+		0.5, 0.5, 1.0, 0.0, // Top-right
+		0.5, -0.5, 1.0, 1.0, // Bottom-right
+		-0.5, -0.5, 0.0, 1.0, // Bottom-left
 	}
 	gl.BufferData(
 		gl.ARRAY_BUFFER,
@@ -80,11 +80,11 @@ func genTex() {
 	gl.TexImage2D(
 		gl.TEXTURE_2D, // work on 2d texture
 		0,             // Level of detail
-		gl.RGBA,        // Format for the gpu
+		gl.RGBA,       // Format for the gpu
 		imgWidth,      // width
 		imgHeight,     // height
 		0,             // border, always 0
-		gl.RGBA,        // format of the image
+		gl.RGBA,       // format of the image
 		//gl.UNSIGNED_INT, // datatype of the image
 		gl.FLOAT,
 		pixels, // image array
@@ -116,13 +116,75 @@ func main() {
 	program.Use()
 	glError("program")
 
+	log.Print("Set Attributes")
 	am := NewAttributeManager(program)
 	am.Add("position", 2)
-	am.Add("color", 3)
+	//am.Add("color", 3)
 	am.Add("texcoord", 2)
 	am.Set()
 
-	genTex()
+	// Give us some dog and cat textures
+	catPix, catWidth, catHeight := png2array("./cat.jpg")
+	dogPix, dogWidth, dogHeight := png2array("./puppy.png")
+
+	catTex := gl.GenTexture()
+	dogTex := gl.GenTexture()
+
+	gl.ActiveTexture(gl.TEXTURE0)
+	glError("active texture")
+	catTex.Bind(gl.TEXTURE_2D)
+	glError("bind texture")
+	gl.TexImage2D(
+		gl.TEXTURE_2D,
+		0,
+		gl.RGBA,
+		catWidth,
+		catHeight,
+		0,
+		gl.RGBA,
+		gl.FLOAT,
+		catPix,
+	)
+	glError("upload cat")
+	uniLocTexCat := program.GetUniformLocation("texCat")
+	glError("cat uniform location")
+	uniLocTexCat.Uniform1i(0)
+
+	glError("tex")
+	// make this mirrored wrap!
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.MIRRORED_REPEAT)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.MIRRORED_REPEAT)
+	glError("wrap")
+	gl.GenerateMipmap(gl.TEXTURE_2D)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
+	glError("mip")
+
+	gl.ActiveTexture(gl.TEXTURE1)
+	dogTex.Bind(gl.TEXTURE_2D)
+	gl.TexImage2D(
+		gl.TEXTURE_2D,
+		0,
+		gl.RGBA,
+		dogWidth,
+		dogHeight,
+		0,
+		gl.RGBA,
+		gl.FLOAT,
+		dogPix,
+	)
+	uniLocTexDog := program.GetUniformLocation("texDog")
+	uniLocTexDog.Uniform1i(1)
+
+	glError("tex")
+	// make this mirrored wrap!
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.MIRRORED_REPEAT)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.MIRRORED_REPEAT)
+	glError("wrap")
+	gl.GenerateMipmap(gl.TEXTURE_2D)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
+	glError("mip")
 
 	for !window.ShouldClose() {
 		// Might be used as a timer or something
