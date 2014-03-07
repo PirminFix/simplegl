@@ -11,7 +11,7 @@ import (
 const NAME = "simplegl"
 const VERSION = "0.0.1"
 
-const TEXTUREFILE = "./texture.png"
+const TEXTUREFILE = "./texture.jpg"
 
 func genVao() gl.VertexArray {
 	// Let's create a Vertex Array Object to save the relation of attributes and buffer object
@@ -77,7 +77,6 @@ func genTex() {
 	tex.Bind(gl.TEXTURE_2D)
 	glError("texgen")
 	pixels, imgWidth, imgHeight := png2array(TEXTUREFILE)
-	log.Printf("pixels: %v", pixels)
 	gl.TexImage2D(
 		gl.TEXTURE_2D, // work on 2d texture
 		0,             // Level of detail

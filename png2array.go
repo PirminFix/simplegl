@@ -7,17 +7,25 @@ import (
 	"os"
 )
 import _ "image/png"
+import _ "image/jpeg"
 
 // says http://golang.org/pkg/image/color/#Color
 const SIZEOF_UINT32 = 0xFFFF
 
 func img2array(img image.Image) (imgSlice []float32, spanX, spanY int) {
+	// Just for documentation:
+	// image.Image has it's (0,0) upper left,
+	// opengl has its (0,0) lower left
+
+	// opengl array seems to start at 0,1, ... 1,1, 0,0, ..., 1,0
 	rect := img.Bounds()
 	spanX = rect.Max.X - rect.Min.X
 	spanY = rect.Max.Y - rect.Min.Y
+	log.Printf("image size: %v x %v", spanX, spanY)
 	//imgSlice = make([]float32, spanX*spanY)
-	for x := rect.Min.X; x < rect.Max.X; x++ {
-		for y := rect.Min.Y; y < rect.Max.Y; y++ {
+
+	for y := rect.Min.Y; y < rect.Max.Y; y++ {
+		for x := rect.Min.X; x < rect.Max.X; x++ {
 			r, g, b, a := img.At(x, y).RGBA()
 			imgSlice = append(
 				imgSlice,
@@ -40,7 +48,7 @@ func png2array(filename string) (imgSlice []float32, width int, height int) {
 	if err != nil {
 		log.Fatalf("Decoding image file failed: %v\n", err)
 	}
-	if format != "png" {
+	if format != "png" && format != "jpeg" {
 		log.Printf("Strangely, format was not png but %v!\n", format)
 	}
 	return img2array(img)
