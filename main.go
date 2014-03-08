@@ -2,10 +2,12 @@ package main
 
 import (
 	"log"
+	"math"
 	"unsafe"
 
 	"github.com/go-gl/gl"
 	"github.com/go-gl/glfw3"
+	"github.com/skelterjohn/go.matrix"
 )
 
 const NAME = "simplegl"
@@ -159,6 +161,20 @@ func main() {
 	glError("mip")
 
 	uniTime := program.GetUniformLocation("time")
+
+	// rotate the cat 180 deg!
+	rotationMatrix := matrix.Eye(4)
+	rotationMatrix.Set(0, 0, math.Cos(math.Pi))
+	rotationMatrix.Set(0, 1, - math.Sin(math.Pi))
+	rotationMatrix.Set(1, 0, math.Sin(math.Pi))
+	rotationMatrix.Set(1, 1, math.Cos(math.Pi))
+
+	transUniform := program.GetUniformLocation("trans")
+	var mat32 [16]float32
+	for i, v := range rotationMatrix.Array() {
+		mat32[i] = float32(v)
+	}
+	transUniform.UniformMatrix4f(false, &mat32)
 
 	for !window.ShouldClose() {
 		// Might be used as a timer or something
