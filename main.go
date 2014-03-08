@@ -158,13 +158,16 @@ func main() {
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
 	glError("mip")
 
+	uniTime := program.GetUniformLocation("time")
+
 	for !window.ShouldClose() {
 		// Might be used as a timer or something
 		// leaving this here as a reminder of its existence
 		glfw3.PollEvents()
 		gl.ClearColor(0.0, 0.0, 0.99999, 1.0)
 		gl.Clear(gl.COLOR_BUFFER_BIT)
-		//time := glfw3.GetTime()
+		time := glfw3.GetTime()
+		uniTime.Uniform1f(float32(time))
 		gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, nil)
 		window.SwapBuffers()
 	}
