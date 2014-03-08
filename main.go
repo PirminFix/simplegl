@@ -125,10 +125,8 @@ func main() {
 
 	// Give us some dog and cat textures
 	catPix, catWidth, catHeight := png2array("./cat.jpg")
-	dogPix, dogWidth, dogHeight := png2array("./puppy.png")
 
 	catTex := gl.GenTexture()
-	dogTex := gl.GenTexture()
 
 	gl.ActiveTexture(gl.TEXTURE0)
 	glError("active texture")
@@ -160,43 +158,13 @@ func main() {
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
 	glError("mip")
 
-	gl.ActiveTexture(gl.TEXTURE1)
-	dogTex.Bind(gl.TEXTURE_2D)
-	gl.TexImage2D(
-		gl.TEXTURE_2D,
-		0,
-		gl.RGBA,
-		dogWidth,
-		dogHeight,
-		0,
-		gl.RGBA,
-		gl.FLOAT,
-		dogPix,
-	)
-	uniLocTexDog := program.GetUniformLocation("texDog")
-	uniLocTexDog.Uniform1i(1)
-
-	glError("tex")
-	// make this mirrored wrap!
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.MIRRORED_REPEAT)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.MIRRORED_REPEAT)
-	glError("wrap")
-	gl.GenerateMipmap(gl.TEXTURE_2D)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
-	glError("mip")
-
-	//timer stuff
-	uniTime := program.GetUniformLocation("time")
-
 	for !window.ShouldClose() {
 		// Might be used as a timer or something
 		// leaving this here as a reminder of its existence
 		glfw3.PollEvents()
 		gl.ClearColor(0.0, 0.0, 0.99999, 1.0)
 		gl.Clear(gl.COLOR_BUFFER_BIT)
-		time := glfw3.GetTime()
-		uniTime.Uniform1f(float32(time))
+		//time := glfw3.GetTime()
 		gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, nil)
 		window.SwapBuffers()
 	}
