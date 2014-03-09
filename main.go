@@ -2,12 +2,10 @@ package main
 
 import (
 	"log"
-	"math"
 	"unsafe"
 
 	"github.com/go-gl/gl"
 	"github.com/go-gl/glfw3"
-	"github.com/skelterjohn/go.matrix"
 )
 
 const NAME = "simplegl"
@@ -163,18 +161,16 @@ func main() {
 	uniTime := program.GetUniformLocation("time")
 
 	// rotate the cat 180 deg!
-	rotationMatrix := matrix.Eye(4)
-	rotationMatrix.Set(0, 0, math.Cos(math.Pi))
-	rotationMatrix.Set(0, 1, - math.Sin(math.Pi))
-	rotationMatrix.Set(1, 0, math.Sin(math.Pi))
-	rotationMatrix.Set(1, 1, math.Cos(math.Pi))
+	uniModel := program.GetUniformLocation("trans")
+	uniView := program.GetUniformLocation("view")
+	uniProj := program.GetUniformLocation("proj")
 
-	transUniform := program.GetUniformLocation("trans")
-	var mat32 [16]float32
-	for i, v := range rotationMatrix.Array() {
-		mat32[i] = float32(v)
-	}
-	transUniform.UniformMatrix4f(false, &mat32)
+	view := LookAt(
+		[3]float64{1.2, 1.2, 1.2},
+		[3]float64{0.0, 0.0, 0.0},
+		[3]float64{0.0, 0.0, 1.0},
+	)
+	uniView.UniformMatrix4f(false, view)
 
 	for !window.ShouldClose() {
 		// Might be used as a timer or something
@@ -183,6 +179,7 @@ func main() {
 		gl.ClearColor(0.0, 0.0, 0.99999, 1.0)
 		gl.Clear(gl.COLOR_BUFFER_BIT)
 		time := glfw3.GetTime()
+		uniModel.UniformMatrix4f(false, rotate(180*time/2.0))
 		uniTime.Uniform1f(float32(time))
 		gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, nil)
 		window.SwapBuffers()
