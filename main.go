@@ -116,7 +116,6 @@ func main() {
 	program.Use()
 	glError("program")
 
-	log.Print("Set Attributes")
 	am := NewAttributeManager(program)
 	am.Add("position", 2)
 	//am.Add("color", 3)
@@ -161,16 +160,22 @@ func main() {
 	uniTime := program.GetUniformLocation("time")
 
 	// rotate the cat 180 deg!
-	uniModel := program.GetUniformLocation("trans")
+	uniModel := program.GetUniformLocation("model")
 	uniView := program.GetUniformLocation("view")
-	uniProj := program.GetUniformLocation("proj")
+	//uniProj := program.GetUniformLocation("proj")
 
-	view := LookAt(
-		[3]float64{1.2, 1.2, 1.2},
-		[3]float64{0.0, 0.0, 0.0},
-		[3]float64{0.0, 0.0, 1.0},
+	var view [16]float64
+	LookAtf2(
+		&view,
+		&[3]float64{1.2, 1.2, 1.2},
+		&[3]float64{0.0, 0.0, 0.0},
+		&[3]float64{0.0, 0.0, 1.0},
 	)
-	uniView.UniformMatrix4f(false, view)
+	var view32 [16]float32
+	for i := 0; i < 16; i++ {
+		view32[i] = float32(view[i])
+	}
+	uniView.UniformMatrix4f(false, &view32)
 
 	for !window.ShouldClose() {
 		// Might be used as a timer or something

@@ -36,6 +36,7 @@ func img2array(img image.Image) (imgSlice []float32, spanX, spanY int) {
 			)
 		}
 	}
+	log.Print("return from img2array")
 	return
 }
 
@@ -51,5 +52,6 @@ func png2array(filename string) (imgSlice []float32, width int, height int) {
 	if format != "png" && format != "jpeg" {
 		log.Printf("Strangely, format was not png but %v!\n", format)
 	}
+	log.Print("png2array retunrs img2array")
 	return img2array(img)
 }
