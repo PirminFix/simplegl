@@ -157,25 +157,25 @@ func main() {
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
 	glError("mip")
 
-	uniTime := program.GetUniformLocation("time")
+	//uniTime := program.GetUniformLocation("time")
 
 	// rotate the cat 180 deg!
-	uniModel := program.GetUniformLocation("model")
-	uniView := program.GetUniformLocation("view")
+	//uniModel := program.GetUniformLocation("model")
+	//uniView := program.GetUniformLocation("view")
 	//uniProj := program.GetUniformLocation("proj")
 
-	var view [16]float64
-	LookAtf2(
-		&view,
-		&[3]float64{1.2, 1.2, 1.2},
-		&[3]float64{0.0, 0.0, 0.0},
-		&[3]float64{0.0, 0.0, 1.0},
-	)
-	var view32 [16]float32
-	for i := 0; i < 16; i++ {
-		view32[i] = float32(view[i])
-	}
-	uniView.UniformMatrix4f(false, &view32)
+	//var view [16]float64
+	//LookAtf2(
+	//	&view,
+	//	&[3]float64{1.2, 1.2, 1.2},
+	//	&[3]float64{0.0, 0.0, 0.0},
+	//	&[3]float64{0.0, 0.0, 1.0},
+	//)
+	//var view32 [16]float32
+	//for i := 0; i < 16; i++ {
+	////	view32[i] = float32(view[i])
+	//}
+	//uniView.UniformMatrix4f(false, &view32)
 
 	for !window.ShouldClose() {
 		// Might be used as a timer or something
@@ -183,9 +183,9 @@ func main() {
 		glfw3.PollEvents()
 		gl.ClearColor(0.0, 0.0, 0.99999, 1.0)
 		gl.Clear(gl.COLOR_BUFFER_BIT)
-		time := glfw3.GetTime()
-		uniModel.UniformMatrix4f(false, rotate(180*time/2.0))
-		uniTime.Uniform1f(float32(time))
+		//time := glfw3.GetTime()
+		//uniModel.UniformMatrix4f(false, rotate(180*time/2.0))
+		//uniTime.Uniform1f(float32(time))
 		gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, nil)
 		window.SwapBuffers()
 	}
